@@ -38,6 +38,17 @@ function allocatePassengers(busStops, passengers) {
 
 }
 
+function getConnections(busStops) {
+    let connections = [];
+    for (let i = 0; i < busStops.length; i++) {
+        let busGeo = [busStops[i].lon, busStops[i].lat];
+        busStops[i].passengers.map(
+            passenger => connections.push([[passenger.lon, passenger.lat], busGeo])
+        );
+    }
+    return connections;
+}
+
 export default function loadAndAllocate(passengerData, busData) {
     let passengers = []
     let busStops = []
@@ -48,7 +59,9 @@ export default function loadAndAllocate(passengerData, busData) {
         stop => busStops.push(new BusStop(stop.lat, stop.lon))
     )
     allocatePassengers(busStops, passengers)
-    return busStops;
+    let allConnections = getConnections(busStops);
+
+    return { stops: busStops, connections: allConnections };
 
 }
 
